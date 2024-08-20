@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div class="col-md-6">
                     <h5>당신과 닮은 역사적 인물</h5>
+                    ${imageTag}
                     <p>${name}</p>
                     <h5>역사적 인물 설명</h5>
                     <p>${description}</p>
