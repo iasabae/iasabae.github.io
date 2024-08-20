@@ -80,12 +80,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.Swal.close();
         }
 
-        // 응답 텍스트를 줄 단위로 분리하고 필요한 부분만 파싱
-        const lines = text.split('\n').map(line => line.trim());
-        const name = lines[0] ? lines[0].split('. ')[1] : '알 수 없음';
-        const description = lines[1] ? lines[1].split('. ')[1] : '알 수 없음';
-        const connection = lines[2] ? lines[2].split('. ')[1] : '알 수 없음';
-        const advice = lines[3] ? lines[3].split('. ')[1] : '알 수 없음';
+        // 응답 텍스트를 줄 단위로 나누고, 원하는 정보를 추출
+        const lines = text.split('\n');
+        let name = '알 수 없음';
+        let description = '알 수 없음';
+        let connection = '알 수 없음';
+        let advice = '알 수 없음';
+
+        lines.forEach(line => {
+            if (line.startsWith("1. ")) {
+                name = line.replace("1. ", "").trim();
+            } else if (line.startsWith("2. ")) {
+                description = line.replace("2. ", "").trim();
+            } else if (line.startsWith("3. ")) {
+                connection = line.replace("3. ", "").trim();
+            } else if (line.startsWith("4. ")) {
+                advice = line.replace("4. ", "").trim();
+            }
+        });
 
         resultDiv.innerHTML = `
             <div class="row">
