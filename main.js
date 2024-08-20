@@ -102,6 +102,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p>${connection}</p>
                     <h5>당신을 위한 조언</h5>
                     <p>${advice}</p>
+                    <h5>AI응답 전체</h5>
+                    <p>${text}</p>
                 </div>
             </div>
         `;
