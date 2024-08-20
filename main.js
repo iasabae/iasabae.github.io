@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 1. 역사적 인물의 이름
 2. 역사적 인물에 대한 간단한 설명 (100자 이내)
 3. 이 역사적 인물과 현대인을 연결 짓는 재미있는 특징이나 이유 (50자 이내)
-4. 이 '가상 전생'을 가진 사람에게 주는 재미있고 긍정적인 조언 (100자 이내) 긍정적인 삶을 살아갈 수 있도록 응원하는 메세지를 담아주세요. 너무 짧게 응답하지는 말아주세요.`;
+4. 이 '가상 전생'을 가진 사람에게 주는 재미있고 긍정적인 조언 (100자 이내) 긍정적인 삶을 살아갈 수 있도록 응원하는 메세지를 담아주세요. 너무 짧게 응답하지는 말아주세요.
 5. 역사적 인물의 사진 URL (가능한 한 유효한 이미지 URL을 제공하세요)`;
 
         const result = await model.generateContent([prompt, { inlineData: { data: imageData, mimeType: "image/jpeg" } }]);
