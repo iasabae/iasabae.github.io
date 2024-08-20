@@ -66,12 +66,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `당신은 재미있고 창의적인 '가상 전생 찾기' 게임의 진행자입니다. 업로드된 현대인의 사진을 보고, 그 사람과 닮았거나 비슷한 특징을 가진 역사적 인물을 자유롭게 상상해서 매칭해주세요. 과학적 증거나 정확성은 중요하지 않습니다. 
-재미있고 긍정적인 상상력을 발휘하세요. 전 세계 다양한 시대와 문화에서 온 인물들로 매칭을 시도해 주세요. 유럽, 아시아, 아프리카, 아메리카 등 각 대륙의 다양한 인물들을 포함하세요. 또한, 인물들은 고대부터 현대까지 여러 시대를 아우르도록 하세요. 다음 형식으로 답변해주세요. 반드시 양식에 맞게 빠짐없이 답변을 하고 각 답변이 무엇인지 말하지말고 바로 답변을 출력해. 잘된 예시: 1. *이름* 이순신, 잘못된 예시: 1. *이름* 이순신 :
+재미있고 긍정적인 상상력을 발휘하세요. 전 세계 다양한 시대와 문화에서 온 인물들로 매칭을 시도해 주세요. 유럽, 아시아, 아프리카, 아메리카 등 각 대륙의 다양한 인물들을 포함하세요. 또한, 인물들은 고대부터 현대까지 여러 시대를 아우르도록 하세요. 결과에는 역사적 인물의 사진 URL을 포함하세요. 가능한 한 공식적이고 신뢰할 수 있는 출처에서 사진을 선택하세요.
+다음 형식으로 답변해주세요. 반드시 양식에 맞게 빠짐없이 답변을 하고 각 답변이 무엇인지 말하지말고 바로 답변을 출력해. 잘된 예시: 1. *이름* 이순신, 잘못된 예시: 1. *이름* 이순신 :
 
 1. 역사적 인물의 이름
 2. 역사적 인물에 대한 간단한 설명 (100자 이내)
 3. 이 역사적 인물과 현대인을 연결 짓는 재미있는 특징이나 이유 (50자 이내)
 4. 이 '가상 전생'을 가진 사람에게 주는 재미있고 긍정적인 조언 (100자 이내) 긍정적인 삶을 살아갈 수 있도록 응원하는 메세지를 담아주세요. 너무 짧게 응답하지는 말아주세요.`;
+5. 역사적 인물의 사진 URL (가능한 한 유효한 이미지 URL을 제공하세요)`;
 
         const result = await model.generateContent([prompt, { inlineData: { data: imageData, mimeType: "image/jpeg" } }]);
         const response = await result.response;
@@ -87,7 +89,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         let description = '알 수 없음';
         let connection = '알 수 없음';
         let advice = '알 수 없음';
-
+        let imageUrl = '';
+        
         lines.forEach(line => {
             if (line.startsWith("1. ")) {
                 name = line.replace("1. ", "").trim();
@@ -97,8 +100,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                 connection = line.replace("3. ", "").trim();
             } else if (line.startsWith("4. ")) {
                 advice = line.replace("4. ", "").trim();
+            } else if (line.startsWith("5. ")) {
+                imageUrl = line.replace("5. ", "").trim();
             }
         });
+
+        // 이미지 URL 유효성 검사
+        const isValidImageUrl = await validateImageUrl(imageUrl);
+
+        let imageTag = '';
+        if (isValidImageUrl) {
+            imageTag = `<img src="${imageUrl}" class="img-fluid" alt="${name}">`;
+        } else {
+            imageTag = '<p>해당 역사적 인물의 이미지를 찾을 수 없습니다.</p>';
+        }
 
         resultDiv.innerHTML = `
             <div class="row">
@@ -115,8 +130,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p>${connection}</p>
                     <h5>당신을 위한 조언</h5>
                     <p>${advice}</p>
-                    <h5>AI응답 전체</h5>
-                    <p>${text}</p>
+                    <h5>이미지링크</h5>
+                    <p>${imageUrl}</p>
                 </div>
             </div>
         `;
@@ -130,6 +145,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 }
 
+function validateImageUrl(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+    });
+}
 
   function fileToBase64(file) {
       return new Promise((resolve, reject) => {
