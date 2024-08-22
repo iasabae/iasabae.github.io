@@ -10,11 +10,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const uploadArea = document.getElementById('uploadArea');
   const fileInput = document.getElementById('fileInput');
   const resultDiv = document.getElementById('result');
-  const cameraButton = document.getElementById('cameraButton');
-  const videoElement = document.getElementById('videoElement');
-  const captureButton = document.getElementById('captureButton');
-  const canvas = document.createElement('canvas');
-  let stream = null;
 
   uploadArea.addEventListener('click', (e) => {
     if (e.target === uploadArea) {
@@ -36,28 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   fileInput.addEventListener('change', handleFileSelect);
-
-  cameraButton.addEventListener('click', async () => {
-    if (!stream) {
-      stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      videoElement.srcObject = stream;
-    }
-    videoElement.style.display = 'block';
-    captureButton.style.display = 'inline-block';
-  });
-
-  captureButton.addEventListener('click', () => {
-    canvas.width = videoElement.videoWidth;
-    canvas.height = videoElement.videoHeight;
-    canvas.getContext('2d').drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-    videoElement.style.display = 'none';
-    captureButton.style.display = 'none';
-
-    canvas.toBlob((blob) => {
-      const file = new File([blob], "captured_image.jpg", { type: 'image/jpeg' });
-      processImage(file);
-    });
-  });
 
   function handleDrop(e) {
       const file = e.dataTransfer.files[0];
